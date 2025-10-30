@@ -1,0 +1,29 @@
+
+services:
+  mongodb-service:
+    image: mongo:latest
+    container_name: mongoDB
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - users-net
+  nodeapi-service:
+    image: node:alpine
+    container_name: users
+    volumes:
+      - ./:/app
+    working_dir: /app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb-service
+    networks:
+      - users-net
+    command: sh -c "npm install && node index.js"
+networks:
+  users-net:
+
+volumes:
+  mongodb_data:
